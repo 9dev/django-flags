@@ -1,6 +1,7 @@
-from django.http import HttpResponse
+from django.views.generic import DetailView
+
+from .models import Article
 
 
-def dummy(request):
-    return HttpResponse('DummyResponse')
-
+class ArticleDetailView(DetailView):
+    model = Article

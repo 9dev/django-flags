@@ -1,13 +1,12 @@
 from django.conf.urls import url
 
-from main import views
+from . import views
 
 
 urlpatterns = [
     url(
-        r'^$',
-        views.dummy,
-        name='dummy'
+        r'^article/(?P<pk>[0-9]+)$',
+        views.ArticleDetailView.as_view(),
+        name='article_detail'
     ),
 ]
-
