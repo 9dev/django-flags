@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>Flag an object</title>
+</head>
+<body>
+    <p>Do you really want to flag this object?</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Yes">
+    </form>
+</body>
+</html>
