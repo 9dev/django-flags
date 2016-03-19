@@ -48,7 +48,7 @@ class TestFlags(BaseTestCase):
             '{}/accounts/login/?next=/flags/create/main/article/{}'.format(self.live_server_url, self.obj.pk)
         )
 
-    def test_can_approve_an_object(self):
+    def test_can_approve_an_object_in_admin(self):
         # There is a flagged Article object.
         Flag.objects.create(content_object=self.obj, creator=User.objects.get(pk=1))
 
@@ -66,6 +66,31 @@ class TestFlags(BaseTestCase):
 
         # She confirms that existing flag for an object disappeared.
         self.assertIn('0 flags', self.get_text())
+
+    def test_can_delete_an_object_in_admin(self):
+        # There is a flagged Article object.
+        Flag.objects.create(content_object=self.obj, creator=User.objects.get(pk=1))
+
+        # Florence logs in as an admin.
+        self.login_as_admin()
+
+        # She hits flags admin panel.
+        self.get('/admin/flags/flag')
+
+        # She deletes an Article object.
+        self.get_by_id('action-toggle').click()
+        select = Select(self.browser.find_element_by_css_selector('select[name="action"]'))
+        select.select_by_visible_text('Delete selected flagged objects')
+        self.browser.find_element_by_css_selector('button[name="index"]').click()
+
+        # She confirms that existing flag for an object disappeared.
+        self.assertIn('0 flags', self.get_text())
+
+        # She hits articles admin panel.
+        self.get('/admin/main/article')
+
+        # She confirms that an Article was deleted.
+        self.assertIn('0 articles', self.get_text())
 
     def test_cannot_flag_object_if_approved(self):
         # There is an approved object.
