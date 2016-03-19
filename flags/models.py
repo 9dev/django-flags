@@ -35,10 +35,15 @@ def on_save_flag(sender, instance, **kwargs):
         Approve.objects.get(object_id=instance.object_id, content_type=instance.content_type)
         instance.delete()
     except Approve.DoesNotExist:
-        threshold = getattr(settings, 'FLAGS_THRESHOLD', None)
-        if threshold:
-            flags = Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type)
-            count = flags.count()
-            if count >= threshold:
-                instance.content_object.delete()
-                flags.delete()
+        flags = Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type)
+        exists = flags.filter(creator=instance.creator).count() > 1
+
+        if exists:
+            instance.delete()
+        else:
+            threshold = getattr(settings, 'FLAGS_THRESHOLD', None)
+            if threshold:
+                count = flags.count()
+                if count >= threshold:
+                    instance.content_object.delete()
+                    flags.delete()

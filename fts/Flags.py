@@ -118,3 +118,27 @@ class TestFlags(BaseTestCase):
 
         # She confirms that all flags for this Article disappeared.
         self.assertIn('0 flags', self.get_text())
+
+    def test_can_flag_object_only_once(self):
+        # Florence logs in as an admin.
+        self.login_as_admin()
+
+        # She hits a detail page for an Article object.
+        self.get('/article/{}'.format(self.obj.pk))
+
+        # She clicks on a link to flag the object.
+        self.browser.find_element_by_partial_link_text('Report abuse').click()
+
+        # She confirms she want to flag this article.
+        self.submit()
+
+        # She repeats that procedure.
+        self.get('/article/{}'.format(self.obj.pk))
+        self.browser.find_element_by_partial_link_text('Report abuse').click()
+        self.submit()
+
+        # She hits flags admin panel.
+        self.get('/admin/flags/flag')
+
+        # She sees only one flag object.
+        self.assertIn('1 flag', self.get_text())
