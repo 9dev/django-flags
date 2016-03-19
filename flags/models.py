@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -35,3 +36,11 @@ def my_callback(sender, instance, **kwargs):
         instance.delete()
     except Approve.DoesNotExist:
         pass
+
+    threshold = getattr(settings, 'FLAGS_THRESHOLD', None)
+    if threshold:
+        flags = Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type)
+        count = flags.count()
+        if count >= threshold:
+            instance.content_object.delete()
+            flags.delete()

@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import Select
 
 from django.contrib.auth.models import User
+from django.test import override_settings
 
 from flags.models import Approve, Flag
 
@@ -88,8 +89,32 @@ class TestFlags(BaseTestCase):
         # She doesn't see any new flag object.
         self.assertIn('0 flags', self.get_text())
 
+    @override_settings(FLAGS_THRESHOLD=3)
     def test_object_is_removed_after_hitting_flag_threshold_if_threshold_set(self):
-        self.fail()
+        # There is an object with two flags.
+        Flag.objects.create(content_object=self.obj, creator=User.objects.get(pk=2))
+        Flag.objects.create(content_object=self.obj, creator=User.objects.get(pk=3))
 
-    def test_object_is_never_removed_if_threshold_not_set(self):
-        self.fail()
+        # Florence logs in as an admin.
+        self.login_as_admin()
+
+        # She hits a detail page for an Article object.
+        self.get('/article/{}'.format(self.obj.pk))
+
+        # She clicks on a link to flag the object.
+        self.browser.find_element_by_partial_link_text('Report abuse').click()
+
+        # She confirms she want to flag this article.
+        self.submit()
+
+        # She hits articles admin panel.
+        self.get('/admin/main/article')
+
+        # She confirms that an Article object disappeared.
+        self.assertIn('0 articles', self.get_text())
+
+        # She hits flags admin panel.
+        self.get('/admin/flags/flag')
+
+        # She confirms that all flags for this Article disappeared.
+        self.assertIn('0 flags', self.get_text())
