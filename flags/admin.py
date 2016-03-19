@@ -3,4 +3,8 @@ from django.contrib import admin
 from .models import Flag
 
 
-admin.site.register(Flag)
+class FlagAdmin(admin.ModelAdmin):
+    list_display = ('content_object', 'creator', 'creation_date')
+
+
+admin.site.register(Flag, FlagAdmin)
