@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
+{% load flags %}
+
 {% block content %}
     <h1>{{ article.title }}</h1>
     <p>{{ article.content }}</p>
+    <a href="{% flag_create_url article %}">Report abuse</a>
 {% endblock content %}
