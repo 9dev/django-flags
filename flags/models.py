@@ -25,22 +25,20 @@ class Approve(models.Model):
 
 
 @receiver(post_save, sender=Approve)
-def my_callback(sender, instance, **kwargs):
+def on_save_approve(sender, instance, **kwargs):\
     Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type).delete()
 
 
 @receiver(post_save, sender=Flag)
-def my_callback(sender, instance, **kwargs):
+def on_save_flag(sender, instance, **kwargs):
     try:
         Approve.objects.get(object_id=instance.object_id, content_type=instance.content_type)
         instance.delete()
     except Approve.DoesNotExist:
-        pass
-
-    threshold = getattr(settings, 'FLAGS_THRESHOLD', None)
-    if threshold:
-        flags = Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type)
-        count = flags.count()
-        if count >= threshold:
-            instance.content_object.delete()
-            flags.delete()
+        threshold = getattr(settings, 'FLAGS_THRESHOLD', None)
+        if threshold:
+            flags = Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type)
+            count = flags.count()
+            if count >= threshold:
+                instance.content_object.delete()
+                flags.delete()
