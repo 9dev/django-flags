@@ -30,7 +30,18 @@ class TestFlags(BaseTestCase):
         self.assertIn('<Article id={}>'.format(self.obj.pk), self.get_text())
 
     def test_unregistered_user_cannot_flag_an_object(self):
-        self.fail()
+        # Florence hits a detail page for an Article object.
+        pk = Article.objects.latest('pk').pk
+        self.get('/article/{}'.format(pk))
+
+        # She clicks on a link to flag the object.
+        self.browser.find_element_by_partial_link_text('Report abuse').click()
+
+        # She is asked to log in first.
+        self.assertEqual(
+            self.browser.current_url,
+            '{}/accounts/login/?next=/flags/create/main/article/{}'.format(self.live_server_url, self.obj.pk)
+        )
 
     def test_cannot_flag_object_if_approved(self):
         self.fail()
