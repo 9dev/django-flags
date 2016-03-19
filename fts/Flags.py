@@ -2,7 +2,7 @@ from selenium.webdriver.support.ui import Select
 
 from django.contrib.auth.models import User
 
-from flags.models import Flag
+from flags.models import Approve, Flag
 
 from main.models import Article
 
@@ -67,7 +67,26 @@ class TestFlags(BaseTestCase):
         self.assertIn('0 flags', self.get_text())
 
     def test_cannot_flag_object_if_approved(self):
-        self.fail()
+        # There is an approved object.
+        Approve.objects.create(content_object=self.obj, creator=User.objects.get(pk=1))
+
+        # Florence logs in as an admin.
+        self.login_as_admin()
+
+        # She hits a detail page for an Article object.
+        self.get('/article/{}'.format(self.obj.pk))
+
+        # She clicks on a link to flag the object.
+        self.browser.find_element_by_partial_link_text('Report abuse').click()
+
+        # She confirms she want to flag this article.
+        self.submit()
+
+        # She hits flags admin panel.
+        self.get('/admin/flags/flag')
+
+        # She doesn't see any new flag object.
+        self.assertIn('0 flags', self.get_text())
 
     def test_object_is_removed_after_hitting_flag_threshold_if_threshold_set(self):
         self.fail()
