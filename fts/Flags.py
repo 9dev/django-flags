@@ -14,8 +14,7 @@ class TestFlags(BaseTestCase):
         self.login_as_admin()
 
         # She hits a detail page for an Article object.
-        pk = Article.objects.latest('pk').pk
-        self.get('/article/{}'.format(pk))
+        self.get('/article/{}'.format(self.obj.pk))
 
         # She clicks on a link to flag the object.
         self.browser.find_element_by_partial_link_text('Report abuse').click()
@@ -31,8 +30,7 @@ class TestFlags(BaseTestCase):
 
     def test_unregistered_user_cannot_flag_an_object(self):
         # Florence hits a detail page for an Article object.
-        pk = Article.objects.latest('pk').pk
-        self.get('/article/{}'.format(pk))
+        self.get('/article/{}'.format(self.obj.pk))
 
         # She clicks on a link to flag the object.
         self.browser.find_element_by_partial_link_text('Report abuse').click()
