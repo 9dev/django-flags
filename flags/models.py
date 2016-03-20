@@ -14,6 +14,9 @@ class Flag(models.Model):
     creator = models.ForeignKey('auth.User')
     creation_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = (('object_id', 'content_type', 'creator'),)
+
 
 class Approve(models.Model):
     object_id = models.PositiveIntegerField()
@@ -22,6 +25,9 @@ class Approve(models.Model):
 
     creator = models.ForeignKey('auth.User')
     creation_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('object_id', 'content_type'),)
 
 
 @receiver(post_save, sender=Approve)
