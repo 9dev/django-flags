@@ -41,7 +41,7 @@ class TestFlags(BaseTestCase):
         # She is asked to log in first.
         self.assertEqual(
             self.browser.current_url,
-            '{}/accounts/login/?next=/flags/create/main/article/1'.format(self.live_server_url)
+            '{}/admin/login/?next=/flags/create/main/article/1'.format(self.live_server_url)
         )
 
     def test_can_approve_an_object_in_admin(self):
