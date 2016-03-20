@@ -14,9 +14,9 @@ setup(
     packages=['flags'],
     include_package_data=True,
     license='MIT License',
-    description='...',
+    description='Django app adding ability to flag spam/offensive objects.',
     long_description=README,
-    url='...',
+    url='https://github.com/9dev/django-flags',
     author='9dev',
     author_email='9devmail@gmail.com',
     classifiers=[
