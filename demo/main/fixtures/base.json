@@ -31,5 +31,13 @@
 			"is_superuser": false,
 			"is_staff": false
 		}
+	},
+	{
+		"model": "main.article",
+		"pk": 1,
+		"fields": {
+			"title": "My title",
+			"content": "My content"
+		}
 	}
 ]
