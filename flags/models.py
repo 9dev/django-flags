@@ -28,7 +28,7 @@ class Approve(models.Model):
 
 
 @receiver(post_save, sender=Approve)
-def on_save_approve(sender, instance, **kwargs):\
+def on_save_approve(sender, instance, **kwargs):
     Flag.objects.filter(object_id=instance.object_id, content_type=instance.content_type).delete()
 
 
