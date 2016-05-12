@@ -16,6 +16,10 @@ class BaseTestCase(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.close()
 
+    def reopen_browser(self):
+        self.browser.close()
+        self.browser = webdriver.Chrome(CHROMEDRIVER_PATH)
+
     def get(self, url=None, name=None, *args, **kwargs):
         if name:
             url = reverse(name, *args, **kwargs)
@@ -24,6 +28,12 @@ class BaseTestCase(StaticLiveServerTestCase):
     def login_as_admin(self):
         self.get(url='/admin')
         self.set_field('id_username', 'admin')
+        self.set_field('id_password', 'admin')
+        self.submit()
+
+    def login_as_regular_user(self):
+        self.get(url='/login')
+        self.set_field('id_username', 'test_user1')
         self.set_field('id_password', 'admin')
         self.submit()
 

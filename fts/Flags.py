@@ -14,7 +14,7 @@ class TestFlags(BaseTestCase):
 
     def test_registered_user_can_flag_an_object(self):
         # Florence logs in as an admin.
-        self.login_as_admin()
+        self.login_as_regular_user()
 
         # She hits a detail page for an Article object.
         self.get('/article/1')
@@ -24,6 +24,10 @@ class TestFlags(BaseTestCase):
 
         # She confirms she want to flag this article.
         self.submit()
+
+        # She logs out and logs in to an admin account.
+        self.reopen_browser()
+        self.login_as_admin()
 
         # She hits flags admin panel.
         self.get('/admin/flags/flag')
@@ -93,7 +97,7 @@ class TestFlags(BaseTestCase):
         Approve.objects.create(content_object=Article.objects.get(pk=1), creator=User.objects.get(pk=1))
 
         # Florence logs in as an admin.
-        self.login_as_admin()
+        self.login_as_regular_user()
 
         # She hits a detail page for an Article object.
         self.get('/article/1')
@@ -103,6 +107,10 @@ class TestFlags(BaseTestCase):
 
         # She confirms she want to flag this article.
         self.submit()
+
+        # She logs out and logs in again as admin.
+        self.reopen_browser()
+        self.login_as_admin()
 
         # She hits flags admin panel.
         self.get('/admin/flags/flag')
