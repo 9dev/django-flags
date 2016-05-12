@@ -10,6 +10,7 @@ from main import urls as main_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^login/', 'django.contrib.auth.views.login'),
     url(r'^flags/', include(flags_urls, namespace='flags')),
     url(r'', include(main_urls)),
 ]
